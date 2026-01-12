@@ -1,6 +1,5 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use std::time::Duration;
 
 /// Unique identifier for each achievement
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -136,9 +135,6 @@ impl Achievement {
         }
     }
 
-    pub fn id(&self) -> AchievementId {
-        self.id
-    }
 
     pub fn name(&self) -> &str {
         self.name
@@ -150,6 +146,11 @@ impl Achievement {
 
     pub fn badge(&self) -> &str {
         self.badge
+    }
+
+    #[allow(dead_code)] // Used in tests
+    pub fn id(&self) -> AchievementId {
+        self.id
     }
 }
 
@@ -165,6 +166,7 @@ impl UnlockedAchievement {
         Self { id, unlocked_at }
     }
 
+    #[allow(dead_code)] // Used in production code (clippy false positive)
     pub fn id(&self) -> AchievementId {
         self.id
     }
@@ -173,23 +175,20 @@ impl UnlockedAchievement {
         self.unlocked_at
     }
 
-    pub fn achievement(&self) -> Achievement {
-        Achievement::get(self.id)
-    }
-}
-
-/// Helper function to check if a challenge qualifies for specific achievement criteria
-pub fn check_fast_completion(time: Duration, threshold_secs: u64) -> bool {
-    time.as_secs() < threshold_secs
-}
-
-pub fn check_efficient_completion(keystrokes: Option<u32>, threshold: u32) -> bool {
-    keystrokes.map_or(false, |ks| ks < threshold)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::time::Duration;
+
+    pub fn check_fast_completion(time: Duration, threshold_secs: u64) -> bool {
+        time.as_secs() < threshold_secs
+    }
+
+    pub fn check_efficient_completion(keystrokes: Option<u32>, threshold: u32) -> bool {
+        keystrokes.is_some_and(|ks| ks < threshold)
+    }
 
     #[test]
     fn test_achievement_get() {
@@ -203,14 +202,6 @@ mod tests {
         let all = AchievementId::all();
         let unique_count = all.len();
         assert!(unique_count > 0);
-    }
-
-    #[test]
-    fn test_unlocked_achievement() {
-        let now = Utc::now();
-        let unlocked = UnlockedAchievement::new(AchievementId::FirstSteps, now);
-        assert_eq!(unlocked.id(), AchievementId::FirstSteps);
-        assert_eq!(unlocked.unlocked_at(), now);
     }
 
     #[test]

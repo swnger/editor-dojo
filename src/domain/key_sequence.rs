@@ -23,11 +23,6 @@ impl KeySequence {
         self.keys.len()
     }
 
-    /// Returns true if the sequence contains no keystrokes.
-    pub fn is_empty(&self) -> bool {
-        self.keys.is_empty()
-    }
-
     /// Formats the key sequence for display with space separation.
     ///
     /// If the sequence is longer than max_length characters, it will be
@@ -63,16 +58,6 @@ impl KeySequence {
             }
         }
     }
-
-    /// Returns the full sequence as a space-separated string without truncation.
-    pub fn as_string(&self) -> String {
-        self.keys.join(" ")
-    }
-
-    /// Returns a reference to the internal vector of keys.
-    pub fn keys(&self) -> &[String] {
-        &self.keys
-    }
 }
 
 #[cfg(test)]
@@ -83,7 +68,6 @@ mod tests {
     fn test_empty_sequence() {
         let seq = KeySequence::empty();
         assert_eq!(seq.count(), 0);
-        assert!(seq.is_empty());
         assert_eq!(seq.format_for_display(100), "(no keystrokes recorded)");
     }
 
@@ -91,8 +75,7 @@ mod tests {
     fn test_simple_sequence() {
         let seq = KeySequence::new(vec!["w".to_string(), "d".to_string(), "w".to_string()]);
         assert_eq!(seq.count(), 3);
-        assert!(!seq.is_empty());
-        assert_eq!(seq.as_string(), "w d w");
+        assert_eq!(seq.format_for_display(100), "w d w");
     }
 
     #[test]
@@ -104,21 +87,12 @@ mod tests {
             "Enter".to_string(),
         ]);
         assert_eq!(seq.count(), 4);
-        assert_eq!(seq.as_string(), "Esc : q Enter");
+        assert_eq!(seq.format_for_display(100), "Esc : q Enter");
     }
 
     #[test]
     fn test_format_for_display_no_truncation() {
         let seq = KeySequence::new(vec!["w".to_string(), "d".to_string(), "w".to_string()]);
         assert_eq!(seq.format_for_display(100), "w d w");
-    }
-
-    #[test]
-    fn test_ctrl_combinations() {
-        let seq = KeySequence::new(vec![
-            "Ctrl-c".to_string(),
-            "Ctrl-d".to_string(),
-        ]);
-        assert_eq!(seq.as_string(), "Ctrl-c Ctrl-d");
     }
 }

@@ -106,25 +106,6 @@ impl Recorder for AsciinemaRecorder {
     }
 }
 
-/// A no-op recorder that doesn't actually record anything.
-///
-/// Used when asciinema is not available or recording is disabled.
-pub struct NoOpRecorder;
-
-impl Recorder for NoOpRecorder {
-    fn start_recording(&mut self, _file_path: &Path, _output_path: &Path) -> Result<Child> {
-        anyhow::bail!("NoOpRecorder cannot start recording")
-    }
-
-    fn finalize_recording(&self, _output_path: &Path) -> Result<Recording> {
-        anyhow::bail!("NoOpRecorder cannot finalize recording")
-    }
-
-    fn is_available() -> bool {
-        false
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

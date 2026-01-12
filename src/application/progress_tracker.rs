@@ -1,5 +1,5 @@
 use crate::application::{AchievementChecker, ProgressRepository};
-use crate::domain::{Achievement, ChallengeStats, Progress, Solution};
+use crate::domain::{Achievement, Progress, Solution};
 use anyhow::Result;
 use chrono::Utc;
 use std::sync::{Arc, Mutex};
@@ -45,27 +45,6 @@ impl<R: ProgressRepository> ProgressTracker<R> {
         Ok(())
     }
 
-    /// Get stats for a specific challenge
-    pub fn get_challenge_stats(&self, challenge_id: &str) -> Option<ChallengeStats> {
-        let progress = self.progress.lock().unwrap();
-        progress.get_challenge_stats(challenge_id).cloned()
-    }
-
-    /// Check if this solution beats any personal record
-    pub fn is_new_record(&self, challenge_id: &str, solution: &Solution) -> (bool, bool) {
-        let progress = self.progress.lock().unwrap();
-
-        if let Some(stats) = progress.get_challenge_stats(challenge_id) {
-            let keystrokes = solution
-                .recording()
-                .map(|r| r.keystroke_count() as u32);
-            stats.is_new_record(solution.elapsed_time(), keystrokes)
-        } else {
-            // First attempt is always a new record if completed
-            (solution.is_completed(), solution.is_completed())
-        }
-    }
-
     /// Set editor preference
     pub fn set_editor_preference(&self, editor: String) -> Result<()> {
         let mut progress = self.progress.lock().unwrap();
@@ -74,16 +53,10 @@ impl<R: ProgressRepository> ProgressTracker<R> {
         Ok(())
     }
 
-    /// Persist current progress to storage
-    pub fn save(&self) -> Result<()> {
-        let progress = self.progress.lock().unwrap();
-        self.repository.save(&progress)
-    }
-
     /// Check for new achievements and update progress
     pub fn check_achievements(&self, total_challenges: usize) -> Result<Vec<Achievement>> {
         let mut progress = self.progress.lock().unwrap();
-        let newly_unlocked = AchievementChecker::check_achievements(&mut *progress, total_challenges);
+        let newly_unlocked = AchievementChecker::check_achievements(&mut progress, total_challenges);
 
         if !newly_unlocked.is_empty() {
             self.repository.save(&progress)?;
@@ -121,10 +94,6 @@ mod tests {
             *self.progress.lock().unwrap() = progress.clone();
             Ok(())
         }
-
-        fn exists(&self) -> bool {
-            true
-        }
     }
 
     #[test]
@@ -138,45 +107,5 @@ mod tests {
         let progress = tracker.get_progress();
         assert_eq!(progress.total_completed(), 1);
         assert_eq!(progress.total_practice_time(), Duration::from_secs(10));
-    }
-
-    #[test]
-    fn test_is_new_record_first_attempt() {
-        let repo = MockRepository::new();
-        let tracker = ProgressTracker::new(repo).unwrap();
-
-        let solution = Solution::completed(Duration::from_secs(10));
-        let (new_time, new_ks) = tracker.is_new_record("test-1", &solution);
-
-        assert!(new_time); // First completion is always a new record
-        assert!(new_ks);
-    }
-
-    #[test]
-    fn test_is_new_record_better_time() {
-        let repo = MockRepository::new();
-        let tracker = ProgressTracker::new(repo).unwrap();
-
-        let first = Solution::completed(Duration::from_secs(10));
-        tracker.record_solution("test-1", &first).unwrap();
-
-        let second = Solution::completed(Duration::from_secs(8));
-        let (new_time, _) = tracker.is_new_record("test-1", &second);
-
-        assert!(new_time);
-    }
-
-    #[test]
-    fn test_is_new_record_worse_time() {
-        let repo = MockRepository::new();
-        let tracker = ProgressTracker::new(repo).unwrap();
-
-        let first = Solution::completed(Duration::from_secs(10));
-        tracker.record_solution("test-1", &first).unwrap();
-
-        let second = Solution::completed(Duration::from_secs(12));
-        let (new_time, _) = tracker.is_new_record("test-1", &second);
-
-        assert!(!new_time);
     }
 }

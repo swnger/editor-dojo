@@ -38,7 +38,7 @@ impl AchievementChecker {
                 let fast_completions = progress
                     .all_challenge_stats()
                     .values()
-                    .filter(|stats| stats.best_time().map_or(false, |t| t.as_secs() < 10))
+                    .filter(|stats| stats.best_time().is_some_and(|t| t.as_secs() < 10))
                     .count();
                 fast_completions >= 10
             }
@@ -47,17 +47,17 @@ impl AchievementChecker {
             AchievementId::LightningFast => progress
                 .all_challenge_stats()
                 .values()
-                .any(|stats| stats.best_time().map_or(false, |t| t.as_secs() < 5)),
+                .any(|stats| stats.best_time().is_some_and(|t| t.as_secs() < 5)),
 
             // Perfectionist - Complete a challenge with under 20 keystrokes
             AchievementId::Perfectionist => progress
                 .all_challenge_stats()
                 .values()
-                .any(|stats| stats.best_keystrokes().map_or(false, |ks| ks < 20)),
+                .any(|stats| stats.best_keystrokes().is_some_and(|ks| ks < 20)),
 
             // Efficiency Expert - Maintain an average under 40 keystrokes
             AchievementId::EfficiencyExpert => {
-                progress.average_keystrokes().map_or(false, |avg| avg < 40)
+                progress.average_keystrokes().is_some_and(|avg| avg < 40)
             }
 
             // Consistent Learner - Practice 7 days in a row
@@ -71,11 +71,7 @@ impl AchievementChecker {
                 let gold_count = progress
                     .all_challenge_stats()
                     .values()
-                    .filter(|stats| {
-                        stats
-                            .mastery_tier()
-                            .map_or(false, |tier| tier == MasteryTier::Gold)
-                    })
+                    .filter(|stats| stats.mastery_tier() == Some(MasteryTier::Gold))
                     .count();
                 gold_count >= 25
             }
@@ -112,7 +108,7 @@ impl AchievementChecker {
                     return false;
                 }
                 let completed = progress.total_completed();
-                let halfway = (total_challenges + 1) / 2; // Round up
+                let halfway = total_challenges.div_ceil(2);
                 completed >= halfway
             }
 

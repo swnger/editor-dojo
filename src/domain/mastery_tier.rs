@@ -40,24 +40,6 @@ impl MasteryTier {
         // Bronze tier: just completed
         MasteryTier::Bronze
     }
-
-    /// Get the display name of the tier
-    pub fn name(&self) -> &str {
-        match self {
-            MasteryTier::Bronze => "Bronze",
-            MasteryTier::Silver => "Silver",
-            MasteryTier::Gold => "Gold",
-        }
-    }
-
-    /// Get the emoji representation of the tier
-    pub fn emoji(&self) -> &str {
-        match self {
-            MasteryTier::Bronze => "🥉",
-            MasteryTier::Silver => "🥈",
-            MasteryTier::Gold => "🥇",
-        }
-    }
 }
 
 #[cfg(test)]

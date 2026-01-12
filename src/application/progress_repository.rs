@@ -9,7 +9,4 @@ pub trait ProgressRepository {
 
     /// Save progress to storage
     fn save(&self, progress: &Progress) -> Result<()>;
-
-    /// Check if progress exists
-    fn exists(&self) -> bool;
 }

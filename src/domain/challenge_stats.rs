@@ -66,14 +66,14 @@ impl ChallengeStats {
             }
 
             // Update best time if this is better
-            let is_better_time = updated.best_time.map_or(true, |best| time < best);
+            let is_better_time = updated.best_time.is_none_or(|best| time < best);
             if is_better_time {
                 updated.best_time = Some(time);
             }
 
             // Update best keystrokes if this is better
             if let Some(new_keystrokes) = keystrokes {
-                let is_better_keystrokes = updated.best_keystrokes.map_or(true, |best| new_keystrokes < best);
+                let is_better_keystrokes = updated.best_keystrokes.is_none_or(|best| new_keystrokes < best);
                 if is_better_keystrokes {
                     updated.best_keystrokes = Some(new_keystrokes);
                 }
@@ -83,11 +83,13 @@ impl ChallengeStats {
         updated
     }
 
+
     /// Check if this attempt beats any personal record
+    #[allow(dead_code)] // Used in tests
     pub fn is_new_record(&self, time: Duration, keystrokes: Option<u32>) -> (bool, bool) {
-        let new_time_record = self.best_time.map_or(true, |best| time < best);
-        let new_keystroke_record = keystrokes.map_or(false, |new_ks| {
-            self.best_keystrokes.map_or(true, |best| new_ks < best)
+        let new_time_record = self.best_time.is_none_or(|best| time < best);
+        let new_keystroke_record = keystrokes.is_some_and(|new_ks| {
+            self.best_keystrokes.is_none_or(|best| new_ks < best)
         });
         (new_time_record, new_keystroke_record)
     }

@@ -14,6 +14,7 @@ pub struct CompletionEvent {
     pub completed_at: DateTime<Utc>,
 }
 
+#[allow(dead_code)] // Constructed via serde deserialization
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct CompletionEventDto {
     challenge_id: String,
@@ -99,13 +100,11 @@ impl Progress {
         // Update or create challenge stats
         let updated_stats = if let Some(existing) = self.challenge_stats.get(&challenge_id) {
             existing.record_attempt(completed, time, keystrokes, attempted_at)
+        } else if completed {
+            ChallengeStats::completed(challenge_id.clone(), time, keystrokes, attempted_at)
         } else {
-            if completed {
-                ChallengeStats::completed(challenge_id.clone(), time, keystrokes, attempted_at)
-            } else {
-                let stats = ChallengeStats::new(challenge_id.clone());
-                stats.record_attempt(completed, time, keystrokes, attempted_at)
-            }
+            let stats = ChallengeStats::new(challenge_id.clone());
+            stats.record_attempt(completed, time, keystrokes, attempted_at)
         };
 
         self.challenge_stats.insert(challenge_id.clone(), updated_stats);
@@ -251,34 +250,15 @@ impl Progress {
         Some(total / keystrokes.len() as u32)
     }
 
-    /// Get recently completed challenges (sorted by completion date, most recent first)
-    pub fn recently_completed(&self, limit: usize) -> Vec<&ChallengeStats> {
-        let mut completed: Vec<_> = self
-            .challenge_stats
-            .values()
-            .filter(|stats| stats.is_completed())
-            .collect();
-
-        completed.sort_by(|a, b| {
-            b.last_attempted_at()
-                .cmp(&a.last_attempted_at())
-        });
-
-        completed.into_iter().take(limit).collect()
-    }
 
     /// Unlock an achievement
     pub fn unlock_achievement(&mut self, id: AchievementId, unlocked_at: DateTime<Utc>) {
-        if !self.unlocked_achievements.contains_key(&id) {
-            self.unlocked_achievements.insert(id, UnlockedAchievement::new(id, unlocked_at));
-        }
+        self.unlocked_achievements
+            .entry(id)
+            .or_insert_with(|| UnlockedAchievement::new(id, unlocked_at));
     }
 
     /// Check if an achievement is unlocked
-    pub fn is_achievement_unlocked(&self, id: AchievementId) -> bool {
-        self.unlocked_achievements.contains_key(&id)
-    }
-
     /// Get all unlocked achievements
     pub fn unlocked_achievements(&self) -> Vec<&UnlockedAchievement> {
         let mut achievements: Vec<_> = self.unlocked_achievements.values().collect();

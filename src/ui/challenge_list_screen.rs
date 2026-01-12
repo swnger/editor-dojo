@@ -91,16 +91,18 @@ impl ChallengeListScreen {
                     FilterMode::All => true,
                     FilterMode::Incomplete => {
                         if let Some(ref progress) = self.progress {
-                            progress.get_challenge_stats(challenge.id())
-                                .map_or(true, |stats| !stats.is_completed())
+                            progress
+                                .get_challenge_stats(challenge.id())
+                                .is_none_or(|stats| !stats.is_completed())
                         } else {
                             true
                         }
                     }
                     FilterMode::Completed => {
                         if let Some(ref progress) = self.progress {
-                            progress.get_challenge_stats(challenge.id())
-                                .map_or(false, |stats| stats.is_completed())
+                            progress
+                                .get_challenge_stats(challenge.id())
+                                .is_some_and(|stats| stats.is_completed())
                         } else {
                             false
                         }

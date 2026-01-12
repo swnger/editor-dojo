@@ -20,6 +20,7 @@ impl JsonProgressRepository {
         Ok(Self { file_path })
     }
 
+    #[cfg(test)]
     /// Create repository with custom path (useful for testing)
     pub fn with_path(file_path: PathBuf) -> Self {
         Self { file_path }
@@ -103,10 +104,6 @@ impl ProgressRepository for JsonProgressRepository {
 
         Ok(())
     }
-
-    fn exists(&self) -> bool {
-        self.file_path.exists()
-    }
 }
 
 // Data Transfer Objects for JSON serialization
@@ -163,7 +160,7 @@ impl ProgressDto {
         let completion_history = progress
             .completion_history()
             .iter()
-            .map(|event| CompletionEventDto::from_domain(event))
+            .map(CompletionEventDto::from_domain)
             .collect();
 
         Self {
@@ -177,27 +174,28 @@ impl ProgressDto {
         }
     }
 
-    fn to_domain(self) -> Progress {
+    fn to_domain(&self) -> Progress {
         let challenge_stats = self
             .challenges
-            .into_iter()
-            .map(|(id, dto)| (id.clone(), dto.to_domain(id)))
+            .iter()
+            .map(|(id, dto)| (id.clone(), dto.to_domain(id.clone())))
             .collect();
 
         let last_practice_date = self
             .last_practice_date
-            .and_then(|s| NaiveDate::parse_from_str(&s, "%Y-%m-%d").ok());
+            .as_ref()
+            .and_then(|s| NaiveDate::parse_from_str(s, "%Y-%m-%d").ok());
 
         let unlocked_achievements = self
             .unlocked_achievements
-            .into_iter()
+            .iter()
             .filter_map(|dto| dto.to_domain())
             .map(|a| (a.id(), a))
             .collect();
 
         let completion_history = self
             .completion_history
-            .into_iter()
+            .iter()
             .filter_map(|dto| dto.to_domain())
             .collect();
 
@@ -206,7 +204,7 @@ impl ProgressDto {
             Duration::from_secs(self.total_practice_time_secs),
             last_practice_date,
             self.longest_streak,
-            self.editor_preference,
+            self.editor_preference.clone(),
             unlocked_achievements,
         )
         .with_completion_history(completion_history)
@@ -222,13 +220,13 @@ impl CompletionEventDto {
         }
     }
 
-    fn to_domain(self) -> Option<crate::domain::progress::CompletionEvent> {
+    fn to_domain(&self) -> Option<crate::domain::progress::CompletionEvent> {
         use crate::domain::progress::CompletionEvent;
 
         DateTime::parse_from_rfc3339(&self.completed_at)
             .ok()
             .map(|dt| CompletionEvent {
-                challenge_id: self.challenge_id,
+                challenge_id: self.challenge_id.clone(),
                 achieved_tier: self.achieved_tier,
                 completed_at: dt.with_timezone(&Utc),
             })
@@ -251,15 +249,17 @@ impl ChallengeStatsDto {
         }
     }
 
-    fn to_domain(self, challenge_id: String) -> ChallengeStats {
+    fn to_domain(&self, challenge_id: String) -> ChallengeStats {
         let first_completed_at = self
             .first_completed_at
-            .and_then(|s| DateTime::parse_from_rfc3339(&s).ok())
+            .as_ref()
+            .and_then(|s| DateTime::parse_from_rfc3339(s).ok())
             .map(|dt| dt.with_timezone(&Utc));
 
         let last_attempted_at = self
             .last_attempted_at
-            .and_then(|s| DateTime::parse_from_rfc3339(&s).ok())
+            .as_ref()
+            .and_then(|s| DateTime::parse_from_rfc3339(s).ok())
             .map(|dt| dt.with_timezone(&Utc));
 
         // Reconstruct ChallengeStats using public methods
@@ -301,7 +301,7 @@ impl UnlockedAchievementDto {
         }
     }
 
-    fn to_domain(self) -> Option<UnlockedAchievement> {
+    fn to_domain(&self) -> Option<UnlockedAchievement> {
         DateTime::parse_from_rfc3339(&self.unlocked_at)
             .ok()
             .map(|dt| UnlockedAchievement::new(self.id, dt.with_timezone(&Utc)))

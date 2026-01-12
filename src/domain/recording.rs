@@ -23,10 +23,6 @@ impl Recording {
         }
     }
 
-    /// Returns the path to the recording file.
-    pub fn file_path(&self) -> &PathBuf {
-        &self.file_path
-    }
 
     /// Returns a reference to the key sequence.
     pub fn key_sequence(&self) -> &KeySequence {
@@ -54,7 +50,6 @@ mod tests {
         let seq = KeySequence::new(vec!["w".to_string(), "d".to_string()]);
         let recording = Recording::new(path.clone(), seq);
 
-        assert_eq!(recording.file_path(), &path);
         assert_eq!(recording.keystroke_count(), 2);
     }
 

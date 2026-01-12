@@ -161,7 +161,7 @@ impl CastParser {
         // If we can't parse it as a known sequence, handle it character by character
         // and join the results
         data.chars()
-            .map(|ch| Self::char_to_key_name(ch))
+            .map(Self::char_to_key_name)
             .collect::<Vec<_>>()
             .join(" ")
     }
