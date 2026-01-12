@@ -1,13 +1,15 @@
 use crate::domain::{Achievement, AchievementId, MasteryTier, Progress};
 use chrono::Utc;
-use std::collections::HashSet;
 
 /// Service for checking and unlocking achievements
 pub struct AchievementChecker;
 
 impl AchievementChecker {
     /// Check all achievements and return newly unlocked ones
-    pub fn check_achievements(progress: &mut Progress, total_challenges: usize) -> Vec<Achievement> {
+    pub fn check_achievements(
+        progress: &mut Progress,
+        total_challenges: usize,
+    ) -> Vec<Achievement> {
         let mut newly_unlocked = Vec::new();
         let already_unlocked = progress.unlocked_achievement_ids();
 
@@ -36,30 +38,22 @@ impl AchievementChecker {
                 let fast_completions = progress
                     .all_challenge_stats()
                     .values()
-                    .filter(|stats| {
-                        stats
-                            .best_time()
-                            .map_or(false, |t| t.as_secs() < 10)
-                    })
+                    .filter(|stats| stats.best_time().map_or(false, |t| t.as_secs() < 10))
                     .count();
                 fast_completions >= 10
             }
 
             // Lightning Fast - Complete a challenge in under 5 seconds
-            AchievementId::LightningFast => {
-                progress
-                    .all_challenge_stats()
-                    .values()
-                    .any(|stats| stats.best_time().map_or(false, |t| t.as_secs() < 5))
-            }
+            AchievementId::LightningFast => progress
+                .all_challenge_stats()
+                .values()
+                .any(|stats| stats.best_time().map_or(false, |t| t.as_secs() < 5)),
 
             // Perfectionist - Complete a challenge with under 20 keystrokes
-            AchievementId::Perfectionist => {
-                progress
-                    .all_challenge_stats()
-                    .values()
-                    .any(|stats| stats.best_keystrokes().map_or(false, |ks| ks < 20))
-            }
+            AchievementId::Perfectionist => progress
+                .all_challenge_stats()
+                .values()
+                .any(|stats| stats.best_keystrokes().map_or(false, |ks| ks < 20)),
 
             // Efficiency Expert - Maintain an average under 40 keystrokes
             AchievementId::EfficiencyExpert => {
@@ -147,7 +141,9 @@ mod tests {
 
         // Should unlock FirstSteps
         let newly_unlocked = AchievementChecker::check_achievements(&mut progress, 50);
-        assert!(newly_unlocked.iter().any(|a| a.id() == AchievementId::FirstSteps));
+        assert!(newly_unlocked
+            .iter()
+            .any(|a| a.id() == AchievementId::FirstSteps));
     }
 
     #[test]
@@ -187,6 +183,8 @@ mod tests {
         }
 
         let newly_unlocked = AchievementChecker::check_achievements(&mut progress, 50);
-        assert!(newly_unlocked.iter().any(|a| a.id() == AchievementId::SpeedDemon));
+        assert!(newly_unlocked
+            .iter()
+            .any(|a| a.id() == AchievementId::SpeedDemon));
     }
 }
