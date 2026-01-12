@@ -7,9 +7,10 @@ use crossterm::{
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
+use rand::seq::SliceRandom;
 use ratatui::{
     backend::CrosstermBackend,
-    layout::{Alignment, Constraint, Direction, Layout, Rect},
+    layout::{Alignment, Constraint, Layout, Rect},
     style::{Color, Modifier, Style},
     text::{Line, Span},
     widgets::{Block, Borders, List, ListItem, Paragraph, Wrap},
@@ -130,14 +131,9 @@ impl ChallengeListScreen {
             return None;
         }
 
-        use std::time::{SystemTime, UNIX_EPOCH};
-        let seed = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_nanos() as usize;
-
-        let random_idx = seed % self.filtered_challenges.len();
-        let challenge_idx = self.filtered_challenges[random_idx];
+        // Use proper RNG from rand crate
+        let mut rng = rand::thread_rng();
+        let challenge_idx = self.filtered_challenges.choose(&mut rng).copied()?;
         Some(self.all_challenges[challenge_idx].clone())
     }
 

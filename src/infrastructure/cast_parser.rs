@@ -98,8 +98,8 @@ impl CastParser {
             return Self::parse_escape_sequence(data);
         }
 
-        // Single character
-        let ch = data.chars().next().unwrap();
+        // Single character - safe to unwrap since we verified len == 1
+        let ch = data.chars().next().expect("Data should have at least one character");
         Self::char_to_key_name(ch)
     }
 
@@ -148,7 +148,8 @@ impl CastParser {
                 _ => {
                     // Alt combinations: Esc followed by a character
                     if data.len() == 2 {
-                        let ch = data.chars().nth(1).unwrap();
+                        // Safe to unwrap since we verified len == 2
+                        let ch = data.chars().nth(1).expect("Data should have second character");
                         if ch.is_alphanumeric() {
                             return format!("Alt-{}", ch);
                         }

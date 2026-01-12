@@ -6,7 +6,7 @@ mod ui;
 use anyhow::{Context, Result};
 use std::io::{self, Write};
 
-use application::{AchievementChecker, ChallengeRunner, ProgressTracker};
+use application::{ChallengeRunner, ProgressTracker};
 use domain::Challenge;
 use infrastructure::{
     AsciinemaRecorder, ChallengeLoader, FileChangeWatcher, HelixEditor, JsonProgressRepository,

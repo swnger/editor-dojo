@@ -1,7 +1,8 @@
+use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
 /// Mastery tier for a challenge based on performance
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum MasteryTier {
     Bronze,
     Silver,

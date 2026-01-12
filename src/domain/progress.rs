@@ -1,8 +1,25 @@
 use crate::domain::challenge_stats::ChallengeStats;
 use crate::domain::achievement::{AchievementId, UnlockedAchievement};
+use crate::domain::MasteryTier;
 use chrono::{DateTime, NaiveDate, Utc};
+use serde::{Serialize, Deserialize};
 use std::collections::{HashMap, HashSet};
 use std::time::Duration;
+
+/// Represents a completion event in the history
+#[derive(Debug, Clone)]
+pub struct CompletionEvent {
+    pub challenge_id: String,
+    pub achieved_tier: MasteryTier,
+    pub completed_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct CompletionEventDto {
+    challenge_id: String,
+    achieved_tier: MasteryTier,
+    completed_at: DateTime<Utc>,
+}
 
 /// Entity representing user's overall progress
 #[derive(Debug, Clone)]
@@ -13,6 +30,8 @@ pub struct Progress {
     longest_streak: u32,
     editor_preference: Option<String>,
     unlocked_achievements: HashMap<AchievementId, UnlockedAchievement>,
+    /// Track completion history for sequential achievements (e.g., GoldRush)
+    completion_history: Vec<CompletionEvent>,
 }
 
 impl Progress {
@@ -25,6 +44,7 @@ impl Progress {
             longest_streak: 0,
             editor_preference: None,
             unlocked_achievements: HashMap::new(),
+            completion_history: Vec::new(),
         }
     }
 
@@ -44,12 +64,19 @@ impl Progress {
             longest_streak,
             editor_preference,
             unlocked_achievements,
+            completion_history: Vec::new(),
         }
     }
 
     /// Set editor preference
     pub fn set_editor_preference(mut self, editor: String) -> Self {
         self.editor_preference = Some(editor);
+        self
+    }
+
+    /// Set completion history (for deserialization)
+    pub fn with_completion_history(mut self, history: Vec<CompletionEvent>) -> Self {
+        self.completion_history = history;
         self
     }
 
@@ -81,7 +108,7 @@ impl Progress {
             }
         };
 
-        self.challenge_stats.insert(challenge_id, updated_stats);
+        self.challenge_stats.insert(challenge_id.clone(), updated_stats);
 
         // Update total practice time
         self.total_practice_time += time;
@@ -95,16 +122,26 @@ impl Progress {
             if current_streak > self.longest_streak {
                 self.longest_streak = current_streak;
             }
+
+            // Add to completion history for sequential achievements
+            let current_stats = self.challenge_stats.get(&challenge_id).unwrap();
+            if let Some(tier) = current_stats.mastery_tier() {
+                self.completion_history.push(CompletionEvent {
+                    challenge_id: challenge_id.clone(),
+                    achieved_tier: tier,
+                    completed_at: attempted_at,
+                });
+            }
         }
     }
 
     /// Calculate current streak based on last practice date
     pub fn calculate_current_streak(&self, today: NaiveDate) -> u32 {
-        if self.last_practice_date.is_none() {
-            return 0;
-        }
+        let last_practice = match self.last_practice_date {
+            Some(date) => date,
+            None => return 0,
+        };
 
-        let last_practice = self.last_practice_date.unwrap();
         let days_since = (today - last_practice).num_days();
 
         // If more than 1 day has passed, streak is broken
@@ -122,7 +159,8 @@ impl Progress {
                 break;
             }
             streak += 1;
-            check_date = check_date.pred_opt().unwrap();
+            // pred_opt() returns None only for dates before year 1, which won't happen in practice
+            check_date = check_date.pred_opt().expect("Date pred_opt should not return None");
         }
 
         streak
@@ -256,6 +294,11 @@ impl Progress {
     /// Get all unlocked achievement IDs as a set
     pub fn unlocked_achievement_ids(&self) -> HashSet<AchievementId> {
         self.unlocked_achievements.keys().copied().collect()
+    }
+
+    /// Get completion history for sequential achievements
+    pub fn completion_history(&self) -> &[CompletionEvent] {
+        &self.completion_history
     }
 }
 

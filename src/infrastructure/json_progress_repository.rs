@@ -119,6 +119,15 @@ struct ProgressDto {
     challenges: HashMap<String, ChallengeStatsDto>,
     #[serde(default)]
     unlocked_achievements: Vec<UnlockedAchievementDto>,
+    #[serde(default)]
+    completion_history: Vec<CompletionEventDto>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct CompletionEventDto {
+    challenge_id: String,
+    achieved_tier: crate::domain::MasteryTier,
+    completed_at: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -151,6 +160,12 @@ impl ProgressDto {
             .map(|a| UnlockedAchievementDto::from_domain(a))
             .collect();
 
+        let completion_history = progress
+            .completion_history()
+            .iter()
+            .map(|event| CompletionEventDto::from_domain(event))
+            .collect();
+
         Self {
             editor_preference: progress.editor_preference().map(|s| s.to_string()),
             total_practice_time_secs: progress.total_practice_time().as_secs(),
@@ -158,6 +173,7 @@ impl ProgressDto {
             longest_streak: progress.longest_streak(),
             challenges,
             unlocked_achievements,
+            completion_history,
         }
     }
 
@@ -179,6 +195,12 @@ impl ProgressDto {
             .map(|a| (a.id(), a))
             .collect();
 
+        let completion_history = self
+            .completion_history
+            .into_iter()
+            .filter_map(|dto| dto.to_domain())
+            .collect();
+
         Progress::with_values(
             challenge_stats,
             Duration::from_secs(self.total_practice_time_secs),
@@ -187,6 +209,29 @@ impl ProgressDto {
             self.editor_preference,
             unlocked_achievements,
         )
+        .with_completion_history(completion_history)
+    }
+}
+
+impl CompletionEventDto {
+    fn from_domain(event: &crate::domain::progress::CompletionEvent) -> Self {
+        Self {
+            challenge_id: event.challenge_id.clone(),
+            achieved_tier: event.achieved_tier,
+            completed_at: event.completed_at.to_rfc3339(),
+        }
+    }
+
+    fn to_domain(self) -> Option<crate::domain::progress::CompletionEvent> {
+        use crate::domain::progress::CompletionEvent;
+
+        DateTime::parse_from_rfc3339(&self.completed_at)
+            .ok()
+            .map(|dt| CompletionEvent {
+                challenge_id: self.challenge_id,
+                achieved_tier: self.achieved_tier,
+                completed_at: dt.with_timezone(&Utc),
+            })
     }
 }
 

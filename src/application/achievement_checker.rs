@@ -82,18 +82,23 @@ impl AchievementChecker {
 
             // Gold Rush - Achieve gold tier on 10 challenges in a row
             AchievementId::GoldRush => {
-                // This is more complex - we'd need to track order of completions
-                // For now, simplified version: just check if you have 10 gold tiers
-                let gold_count = progress
-                    .all_challenge_stats()
-                    .values()
-                    .filter(|stats| {
-                        stats
-                            .mastery_tier()
-                            .map_or(false, |tier| tier == MasteryTier::Gold)
-                    })
-                    .count();
-                gold_count >= 10
+                // Find the longest sequence of consecutive gold completions
+                let mut current_streak = 0;
+                let mut longest_streak = 0;
+
+                for event in progress.completion_history() {
+                    if event.achieved_tier == MasteryTier::Gold {
+                        current_streak += 1;
+                        if current_streak > longest_streak {
+                            longest_streak = current_streak;
+                        }
+                    } else {
+                        // Reset streak for non-gold completion
+                        current_streak = 0;
+                    }
+                }
+
+                longest_streak >= 10
             }
 
             // Completionist - Complete all available challenges
@@ -158,9 +163,16 @@ mod tests {
             Utc::now(),
         );
 
-        // First check should unlock
+        // First check should unlock two achievements: FirstSteps (1 completion) and
+        // EfficiencyExpert (average < 40 keystrokes, 30 < 40)
         let newly_unlocked = AchievementChecker::check_achievements(&mut progress, 50);
-        assert_eq!(newly_unlocked.len(), 1);
+        assert_eq!(newly_unlocked.len(), 2);
+        assert!(newly_unlocked
+            .iter()
+            .any(|a| a.id() == AchievementId::FirstSteps));
+        assert!(newly_unlocked
+            .iter()
+            .any(|a| a.id() == AchievementId::EfficiencyExpert));
 
         // Second check should not unlock again
         let newly_unlocked = AchievementChecker::check_achievements(&mut progress, 50);
