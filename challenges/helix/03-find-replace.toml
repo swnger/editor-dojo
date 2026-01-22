@@ -11,7 +11,7 @@ helix = "Use '/' to search for 'cat', then 'cw' to change word and type 'dog'"
 hint_1 = "Search forward: Press '/' and type the word you're looking for, then Enter"
 hint_2 = "Change command: 'c' enters insert mode while deleting, combine with motion"
 hint_3 = "Solution: Type '/cat' Enter, then 'cw' to change word, type 'dog', press Esc"
-optimal_solution = "/cat\ncwdog\x1b"
+optimal_solution = "/cat\ncwdog\u001b"
 optimal_keystrokes = 10
 
 [content]

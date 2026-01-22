@@ -11,7 +11,7 @@ helix = "Move cursor to 'g' in 'string', press 'a' to append, type '?', press Es
 hint_1 = "The 'a' command enters insert mode after the cursor position"
 hint_2 = "Use 'e' to move to the end of 'string' (the 'g'), then 'a' to append after it"
 hint_3 = "Complete: 'e' to end of 'string', 'a' to append, type '?', Escape"
-optimal_solution = "ea?\x1b"
+optimal_solution = "ea?\u001b"
 optimal_keystrokes = 4
 
 [content]

@@ -9,10 +9,10 @@ tags = ["text-object", "quotes", "change", "inner"]
 generic = "Change the text inside quotes without changing the quotes themselves"
 helix = "Move cursor inside quotes, press 'mi\"' to select inner quotes, press 'c' to change, type 'Updated message', press Escape"
 
-hint_1 = "Inner quote text object 'mi"' selects content within quotes, excluding the quote marks"
+hint_1 = "Inner quote text object 'mi\"' selects content within quotes, excluding the quote marks"
 hint_2 = "Navigate inside the quotes (between the quote marks), then select and change"
-hint_3 = "Complete: navigate to string content, 'mi"c' to select inner quotes and change, type 'Updated message', Escape"
-optimal_solution = "eeeemi"cUpdated message\x1b"
+hint_3 = "Complete: navigate to string content, 'mi\"c' to select inner quotes and change, type 'Updated message', Escape"
+optimal_solution = "eeeemi\"cUpdated message\u001b"
 optimal_keystrokes = 23
 
 [content]

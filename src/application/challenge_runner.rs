@@ -141,6 +141,13 @@ where
                     .is_valid(&current_content, challenge.target_content())
                 {
                     completed = true;
+                    // Terminate editor immediately when validation succeeds
+                    if let Some(mut child) = recording_process.take() {
+                        // Kill asciinema process (which terminates the editor subprocess)
+                        let _ = child.kill();
+                    } else {
+                        self.editor.terminate()?;
+                    }
                     break;
                 }
             }

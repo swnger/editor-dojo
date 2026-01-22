@@ -11,7 +11,7 @@ helix = "Position on the method line, press 'O' (capital O) to open line above, 
 hint_1 = "'O' (capital O) opens a new line above the cursor and enters insert mode"
 hint_2 = "The new line is inserted above without needing manual navigation"
 hint_3 = "Complete: 'O' to open above, type '[Obsolete]', Escape"
-optimal_solution = "O[Obsolete]\x1b"
+optimal_solution = "O[Obsolete]\u001b"
 optimal_keystrokes = 12
 
 [content]

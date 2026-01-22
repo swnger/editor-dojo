@@ -11,8 +11,8 @@ helix = "Move to 'Task', press 'P' to paste 'async ' (after copying/typing), mov
 
 hint_1 = "Adding async/await: Insert 'async' before return type, 'await' before async method call"
 hint_2 = "Navigate to 'Task' to add 'async ', then to 'return' to add 'await '"
-hint_3 = "Complete: 'wiasync ' for async, then 'wwwiawait ' for await"
-optimal_solution = "wiasync jjwiawait \x1b"
+hint_3 = "Complete: 'wiasync \u001b' for async, then 'wwwiawait \u001b' for await"
+optimal_solution = "wiasync \u001bjjwiawait \u001b"
 optimal_keystrokes = 18
 
 [content]

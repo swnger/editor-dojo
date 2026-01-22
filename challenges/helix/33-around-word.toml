@@ -12,7 +12,7 @@ helix = "Move cursor to 'static', press 'maw' to select around word, press 'd' t
 hint_1 = "'ma' selects 'around' text object, including surrounding whitespace"
 hint_2 = "Navigate to 'static' using 'w' to move from 'public' → 'static'"
 hint_3 = "Complete: 'w' to reach 'static', 'mawd' to select around word and delete"
-optimal_solution = "wmawd\x1b"
+optimal_solution = "wmawd\u001b"
 optimal_keystrokes = 5
 
 [content]

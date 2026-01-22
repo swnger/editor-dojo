@@ -11,7 +11,7 @@ helix = "Move cursor to 'void', press 'C' to change to line end, type 'Task Proc
 hint_1 = "Change to line end: select to end then change, or use 'c$'"
 hint_2 = "Navigate to 'void' using 'w' to move from 'public' → 'void'"
 hint_3 = "Complete: 'w' to reach 'void', 'c$' to change to end, type 'Task ProcessAsync()', Escape"
-optimal_solution = "wc$Task ProcessAsync()\x1b"
+optimal_solution = "wc$Task ProcessAsync()\u001b"
 optimal_keystrokes = 24
 
 [content]

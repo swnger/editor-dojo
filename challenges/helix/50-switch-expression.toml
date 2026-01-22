@@ -11,8 +11,8 @@ helix = "Move to end of '\"Large\"', press 'a' to append, type ',', press 'o' to
 
 hint_1 = "Switch expressions need a default case using the discard pattern '_'"
 hint_2 = "Add comma after last case, open new line, add default case with proper indentation"
-hint_3 = "Complete: navigate to end of 'Large"', 'a,o' to append comma and open line, type '    _ => "Unknown"', Escape"
-optimal_solution = "$i,o    _ => "Unknown"\x1b"
+hint_3 = "Complete: navigate to end of 'Large\"', 'a,\\u001bo' to append comma and open line, type '    _ => \"Unknown\"', Escape"
+optimal_solution = "$i,\u001bo    _ => \"Unknown\"\u001b"
 optimal_keystrokes = 21
 
 [content]

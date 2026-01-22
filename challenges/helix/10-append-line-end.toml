@@ -11,7 +11,7 @@ helix = "Press 'A' (capital A) to append at line end, type ' // TODO: Implement'
 hint_1 = "Line end operations: There are shortcuts to jump to the end and start inserting"
 hint_2 = "Capital 'A' in Helix: Jumps to line end AND enters insert mode in one keystroke"
 hint_3 = "Complete solution: Press 'A', type ' // TODO: Implement', then Escape"
-optimal_solution = "A // TODO: Implement\x1b"
+optimal_solution = "A // TODO: Implement\u001b"
 optimal_keystrokes = 23
 
 [content]

@@ -11,7 +11,7 @@ helix = "Use 'e' to jump to word endings, then 'a' to append after cursor, type 
 hint_1 = "The 'e' command moves to the end of the current or next word"
 hint_2 = "From start: 'e' moves to end of 'string', then 'a' enters insert mode after cursor"
 hint_3 = "Complete: 'e' to end of 'string', 'a' to append, type '?', Escape"
-optimal_solution = "ea?\x1b"
+optimal_solution = "ea?\u001b"
 optimal_keystrokes = 4
 
 [content]

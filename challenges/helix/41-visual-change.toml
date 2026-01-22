@@ -11,7 +11,7 @@ helix = "Move to 's' in string[], press 'v', extend selection with motion keys t
 hint_1 = "Use motions to select: 'w' selects word, 'e' extends to end, 'f]' finds ']'"
 hint_2 = "Navigate to 'string', then use 'wf]c' to select to ']' and change"
 hint_3 = "Complete: navigate to 'string', 'wf]c' to select 'string[]' and change, type 'List<string>', Escape"
-optimal_solution = "eeewf]cList<string>\x1b"
+optimal_solution = "eeewf]cList<string>\u001b"
 optimal_keystrokes = 22
 
 [content]

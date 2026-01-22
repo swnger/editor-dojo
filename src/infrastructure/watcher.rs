@@ -27,7 +27,7 @@ impl Default for FileChangeWatcher {
 impl FileWatcher for FileChangeWatcher {
     fn watch(&mut self, file_path: &Path, tx: mpsc::Sender<()>) -> Result<()> {
         // Create a debounced watcher to avoid excessive notifications
-        let config = Config::default().with_poll_interval(Duration::from_millis(100));
+        let config = Config::default().with_poll_interval(Duration::from_millis(50));
 
         let mut watcher = RecommendedWatcher::new(
             move |_res| {

@@ -11,7 +11,7 @@ helix = "Move cursor to '=', press 'r' then '+' to replace with '+', move right 
 hint_1 = "The 'r' command replaces the character under cursor with the next character you type"
 hint_2 = "You need to: replace '=' with '+', then add another '=' to make '+='"
 hint_3 = "Complete: 'f=' to find '=', 'i' to insert, type '+', Escape (or 'f=r+a=', Escape)"
-optimal_solution = "f=i+\x1b"
+optimal_solution = "f=i+\u001b"
 optimal_keystrokes = 5
 
 [content]

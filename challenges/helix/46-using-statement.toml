@@ -12,7 +12,7 @@ helix = "Delete 'statement' after using, move to '{', press 'dd' to delete line 
 hint_1 = "Using declarations (C# 8+) remove braces, variable is disposed at end of scope"
 hint_2 = "Delete 'statement', delete the opening brace line, delete the closing brace"
 hint_3 = "Complete: find and delete 'statement', delete brace lines with line selection + delete"
-optimal_solution = "/statementwwd/{jx/}x\x1b"
+optimal_solution = "/statement\u001bwwd/{\u001bjx/}\u001bx\u001b"
 optimal_keystrokes = 16
 
 [content]

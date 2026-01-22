@@ -12,7 +12,7 @@ helix = "Move cursor inside braces, press 'mi{' to select inner braces, press 'd
 hint_1 = "Inner braces 'mi{' selects content between '{' and '}', excluding the braces"
 hint_2 = "Navigate inside the braces (to 'get' or 'set') then use the text object"
 hint_3 = "Complete: 'f{' to find '{', 'lmi{d' to move right, select inner braces and delete"
-optimal_solution = "f{lmi{d\x1b"
+optimal_solution = "f{lmi{d\u001b"
 optimal_keystrokes = 7
 
 [content]

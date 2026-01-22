@@ -11,7 +11,7 @@ helix = "Press '^' to jump to first non-blank character, then 'cw' to change wor
 hint_1 = "The '^' command moves to the first non-whitespace character, skipping indentation"
 hint_2 = "After '^' positions you on 'if', use 'cw' to change the word (deletes and enters insert mode)"
 hint_3 = "Complete: '^' to 'if', 'cw' to change word, type 'while', Escape"
-optimal_solution = "^cwwhile\x1b"
+optimal_solution = "^cwwhile\u001b"
 optimal_keystrokes = 9
 
 [content]

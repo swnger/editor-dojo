@@ -12,7 +12,7 @@ helix = "Move to '.ToList', press 'i' to insert, type '.Where(x => x.IsActive)',
 hint_1 = "LINQ methods can be chained - each method returns an IEnumerable"
 hint_2 = "Navigate to the '.' before 'ToList' and insert the Where clause before it"
 hint_3 = "Complete: 'f.i' to find '.' and insert, type '.Where(x => x.IsActive)', Escape"
-optimal_solution = "f.i.Where(x => x.IsActive)\x1b"
+optimal_solution = "f.i.Where(x => x.IsActive)\u001b"
 optimal_keystrokes = 29
 
 [content]

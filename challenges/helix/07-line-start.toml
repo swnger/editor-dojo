@@ -11,7 +11,7 @@ helix = "Press '0' to jump to line start, then 'i' to insert, type 'private ', p
 hint_1 = "The '0' command moves to column 0 (the very first character position)"
 hint_2 = "After moving with '0', use 'i' to enter insert mode before the cursor"
 hint_3 = "Complete: '0' to start of line, 'i' to insert, type 'private ', Escape"
-optimal_solution = "0iprivate \x1b"
+optimal_solution = "0iprivate \u001b"
 optimal_keystrokes = 11
 
 [content]

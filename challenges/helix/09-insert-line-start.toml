@@ -11,7 +11,7 @@ helix = "Press 'I' (capital I) to insert at first non-blank character, type 'awa
 hint_1 = "'I' is a shortcut combining '^' (first non-blank) and 'i' (insert mode)"
 hint_2 = "It immediately puts you in insert mode at the start of actual content, skipping indentation"
 hint_3 = "Complete: 'I' to insert at line start, type 'await ', Escape"
-optimal_solution = "Iawait \x1b"
+optimal_solution = "Iawait \u001b"
 optimal_keystrokes = 8
 
 [content]

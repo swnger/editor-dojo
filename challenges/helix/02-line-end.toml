@@ -11,7 +11,7 @@ helix = "Press 'A' to append at line end, type '!', then press Escape"
 hint_1 = "In Helix, 'A' is a shortcut that combines moving to line end and entering insert mode"
 hint_2 = "After typing the character, press Escape to return to normal mode"
 hint_3 = "Complete solution: Press 'A' to append at line end, type '!', press Escape"
-optimal_solution = "A!\x1b"
+optimal_solution = "A!\u001b"
 optimal_keystrokes = 3
 
 [content]

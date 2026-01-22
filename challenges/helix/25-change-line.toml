@@ -11,7 +11,7 @@ helix = "Position cursor on the line, press 'cc' to change line, type 'return tr
 hint_1 = "In Helix, select the line with 'x' then 'c' to change, or use alt-c for change line"
 hint_2 = "Navigate to line 2 using 'j' to move down, maintain indentation when typing"
 hint_3 = "Complete: 'j' to line 2, 'xc' to change line, type '    return true;', Escape"
-optimal_solution = "jxc    return true;\x1b"
+optimal_solution = "jxc    return true;\u001b"
 optimal_keystrokes = 20
 
 [content]

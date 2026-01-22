@@ -11,8 +11,8 @@ helix = "Use 'f' to find each 'g' at end of 'string', press 'a' to append, type 
 
 hint_1 = "Nullable reference types use '?' after the type name"
 hint_2 = "Find first 'string', append '?', then repeat for second 'string'"
-hint_3 = "Complete: 'ea?' for first string, 'ea?' again for second (use ';' to repeat find if needed)"
-optimal_solution = "ea?wea?\x1b"
+hint_3 = "Complete: 'ea?\u001b' for first string, 'ea?\u001b' again for second (use ';' to repeat find if needed)"
+optimal_solution = "ea?\u001bwea?\u001b"
 optimal_keystrokes = 8
 
 [content]

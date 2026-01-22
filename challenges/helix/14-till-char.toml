@@ -11,7 +11,7 @@ helix = "Press 't(' to move till '(', then 'i' to insert, type 'Async', press Es
 hint_1 = "The 't' command moves till (just before) a character"
 hint_2 = "Type 't(' to move cursor just before the '(' character"
 hint_3 = "Complete: 't(' to position, 'i' to insert, type 'Async', Escape"
-optimal_solution = "t(iAsync\x1b"
+optimal_solution = "t(iAsync\u001b"
 optimal_keystrokes = 9
 
 [content]

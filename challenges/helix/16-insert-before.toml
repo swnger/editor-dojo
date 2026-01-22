@@ -11,7 +11,7 @@ helix = "Move cursor to 's' in 'string', press 'i' to insert, type 'readonly ', 
 hint_1 = "The 'i' command enters insert mode before the cursor position"
 hint_2 = "Navigate to 'string' using 'w' twice to move from 'private' → 'string'"
 hint_3 = "Complete: 'ww' to reach 'string', 'i' to insert, type 'readonly ', Escape"
-optimal_solution = "wwireadonly \x1b"
+optimal_solution = "wwireadonly \u001b"
 optimal_keystrokes = 13
 
 [content]

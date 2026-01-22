@@ -12,7 +12,7 @@ helix = "Move to ')' before closing paren, press 'i' to insert, type ', ILogger 
 hint_1 = "Constructor parameters are comma-separated in the parameter list"
 hint_2 = "Navigate to the position before the closing ')' and insert ', ILogger logger'"
 hint_3 = "Complete: 'f)i' to find ')' and insert before, type ', ILogger logger', Escape"
-optimal_solution = "f)i, ILogger logger\x1b"
+optimal_solution = "f)i, ILogger logger\u001b"
 optimal_keystrokes = 21
 
 [content]
